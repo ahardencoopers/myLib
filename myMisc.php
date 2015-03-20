@@ -66,7 +66,7 @@ function convertirArreglo($arrAsociativo, &$arrTradicional)
 	}
 }
 
-function crearComandoScript($nombreScript)
+function crearNombreComando($nombreScript)
 {
 	$args = func_get_args();
 	$i = 0;
