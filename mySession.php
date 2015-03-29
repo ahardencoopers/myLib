@@ -59,7 +59,6 @@ function validarSesion()
 		mysqli_stmt_fetch($stmtChecarUsuario);
 
 		mysqli_stmt_store_result($stmtChecarUsuario);	
-
 		if($_SESSION["nombre"] == $checarNombre && $_SESSION["id"] == $checarId && $checarNombre != "")
 		{
 			$queryChecarPassword = "SELECT password FROM Passwords WHERE usuarioFK = ?";
@@ -116,6 +115,18 @@ function terminarSesion()
 
 	//Destruir la sesion
 	session_destroy();
+}
+
+//Funcion para desplegar la forma de logout
+//Recibe la pagina donde se hace la accion de la forma
+function crearLogout($accion)
+{
+	echo <<<OUT
+	<form action="$accion" method="post">
+		<input type="hidden" name="logout" value="true">
+		<input type="submit" name="submitLogout" value="Cerrar sesion">
+	</form>
+OUT;
 }
 
 ?>

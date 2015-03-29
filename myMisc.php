@@ -90,4 +90,16 @@ function crearNombreComando($nombreScript)
 	return $nombreComando;
 }
 
+//Funcion para desplegar un mensaje de bienvenida recibiendo 
+//el nombre del usuario.
+function bienvenido($usuario)
+{
+	$mensaje = "Bienvenido, ".$usuario;
+
+	echo <<<OUT
+	<h1>$mensaje</h1>
+OUT;
+	
+}
+
 ?>
