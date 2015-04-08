@@ -12,7 +12,7 @@ function conectarDb()
 		//Cargar credenciales de conexion a base de datos
 		//Las credenciales se cargan en un arreglo
 		$credenciales = 
-			parse_ini_file('/var/www/html/serverfile/config.ini');
+			parse_ini_file('/var/config/config.ini');
 
 		//Conexion a base de datos
 		//Se utilizan los datos del arreglo asociativo previamente definido
