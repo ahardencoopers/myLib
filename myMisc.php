@@ -66,40 +66,5 @@ function convertirArreglo($arrAsociativo, &$arrTradicional)
 	}
 }
 
-function crearNombreComando($nombreScript)
-{
-	$args = func_get_args();
-	$i = 0;
-	$arrNombres = array();
-	$arrValores = array();
-	$nombreComando = $nombreScript;
-
-	foreach($args as $valor)
-	{
-		if($i > 0)
-		{
-			$iTemp = $i-1;
-			$arrNombres[$iTemp] = '\$arrValores'.$iTemp;
-			$arrValores[$iTemp] = $valor;
-			$nombreComando = $nombreComando.$arrNombres[$iTemp]." ";
-		}
-	
-		$i++;
-	}
-
-	return $nombreComando;
-}
-
-//Funcion para desplegar un mensaje de bienvenida recibiendo 
-//el nombre del usuario.
-function bienvenido($usuario)
-{
-	$mensaje = "Bienvenido, ".$usuario;
-
-	echo <<<OUT
-	<h1>$mensaje</h1>
-OUT;
-	
-}
 
 ?>
