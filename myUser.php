@@ -147,7 +147,7 @@ function existeUsuario($arrDatos, &$nombreUsuario, &$idUsuario)
                 mysqli_stmt_execute($stmtChecarUsuario);
                 mysqli_stmt_bind_result($stmtChecarUsuario, $checarNombre, $checarId);
                 mysqli_stmt_fetch($stmtChecarUsuario);	
-
+		mysqli_stmt_store_result($stmtChecarUsuario);	
 		if($arrDatos[0] == $checarNombre)
 		{
 			$nombreUsuario = $checarNombre;
@@ -168,21 +168,21 @@ function existeUsuario($arrDatos, &$nombreUsuario, &$idUsuario)
 	}
 
 	//Purgar resultados
-	mysqli_stmt_store_result($stmtChecarUsuario);	
 
 }
 
-function existePassword($arrDatos, &$hashUsuario)
+function existePassword($arrDatos, &$hashUsuario,$idUsuario)
 {
+	$conexion = conectarDb();	
+
 	$queryChecarPassword = "SELECT password FROM Passwords WHERE usuarioFK = ?";
-	
 	if(prepararQuery($queryChecarPassword, $stmtChecarPassword, $conexion))
 	{
 		mysqli_stmt_bind_param($stmtChecarPassword, "i",  $idUsuario);
 	        mysqli_stmt_execute($stmtChecarPassword);
 	        mysqli_stmt_bind_result($stmtChecarPassword, $checarPassword);
 	        mysqli_stmt_fetch($stmtChecarPassword);
-	
+		mysqli_stmt_store_result($stmtChecarPassword);	
 		//3.
 		if(password_verify($arrDatos[1], $checarPassword))
 		{
@@ -195,7 +195,6 @@ function existePassword($arrDatos, &$hashUsuario)
 			return false;
 		}
 
-		mysqli_stmt_store_result($stmtChecarUsuario);	
 
 	}
 

@@ -66,5 +66,9 @@ function convertirArreglo($arrAsociativo, &$arrTradicional)
 	}
 }
 
+function dumpArreglo($arrDatos)
+{
+	print_r(array_values($arrDatos));
+}
 
 ?>
