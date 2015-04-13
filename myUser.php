@@ -135,4 +135,70 @@ function agregarPassword($arrDatos)
 
 }
 
+function existeUsuario($arrDatos, &$nombreUsuario, &$idUsuario)
+{
+	$conexion = conectarDb();
+
+	$queryChecarUsuario = "SELECT nombre,id FROM Usuarios WHERE nombre = ?";
+
+	if(prepararQuery($queryChecarUsuario, $stmtChecarUsuario, $conexion))
+	{
+		mysqli_stmt_bind_param($stmtChecarUsuario, "s", $arrDatos[0]);
+                mysqli_stmt_execute($stmtChecarUsuario);
+                mysqli_stmt_bind_result($stmtChecarUsuario, $checarNombre, $checarId);
+                mysqli_stmt_fetch($stmtChecarUsuario);	
+
+		if($arrDatos[0] == $checarNombre)
+		{
+			$nombreUsuario = $checarNombre;
+			$idUsuario = $checarId;
+			return true;
+		}
+		else
+		{
+			echoLine("El usuario no existe en la base de datos.");
+			return false;
+		}
+
+	}
+	else
+	{
+			echoLine("Error al preparar query (existeUsuario).");
+			return false;
+	}
+
+	//Purgar resultados
+	mysqli_stmt_store_result($stmtChecarUsuario);	
+
+}
+
+function existePassword($arrDatos, &$hashUsuario)
+{
+	$queryChecarPassword = "SELECT password FROM Passwords WHERE usuarioFK = ?";
+	
+	if(prepararQuery($queryChecarPassword, $stmtChecarPassword, $conexion))
+	{
+		mysqli_stmt_bind_param($stmtChecarPassword, "i",  $idUsuario);
+	        mysqli_stmt_execute($stmtChecarPassword);
+	        mysqli_stmt_bind_result($stmtChecarPassword, $checarPassword);
+	        mysqli_stmt_fetch($stmtChecarPassword);
+	
+		//3.
+		if(password_verify($arrDatos[1], $checarPassword))
+		{
+			$hashUsuario = $checarPassword;	
+			return true;
+		}
+		else
+		{
+			echoLine("Credenciales invalidas");
+			return false;
+		}
+
+		mysqli_stmt_store_result($stmtChecarUsuario);	
+
+	}
+
+}
+
 ?>
