@@ -38,6 +38,11 @@ function subirArchivo()
 	$tamArchivo = $_FILES['archivo']['size']/1024;
 	$pathArchivo = "/var/www/html/serverfile/archivosRoot/".$nombreArchivo;
 
+	if($_POST['crearDirectorio'] == "true")
+	{
+		$tipoArchivo = "dir";
+	}
+
 	//Checar que no haya otro archivo con el mismo nombre en la base de datos
 	//Query para checar que no haya otro archivo con el mismo nombre
 	$queryChecarArchivo = "SELECT nombre FROM Archivos where nombre = ?";
@@ -48,7 +53,6 @@ function subirArchivo()
 		mysqli_stmt_execute($stmtChecarArchivo);
 		mysqli_stmt_bind_result($stmtChecarArchivo, $checarArchivo);
 		mysqli_stmt_fetch($stmtChecarArchivo);
-
 	}
 	else
 	{
@@ -82,9 +86,11 @@ function subirArchivo()
 		}
 		else
 		{
-			echoLine("Error al insertar entrada de archivo en la base de datos");
+			echoLine("Error al insertar entrada de archivo en la base de datos.");
+			echoLine("Asegurese que el archivo/carpeta tenga un nombre que no se ha utilizado en la base de datos.");
 			return false;
 		}
+
 	}
 	
 	mysqli_stmt_store_result($stmtCrearArchivo);
@@ -92,8 +98,9 @@ function subirArchivo()
 	if(!$creoEntrada)
 	{
 		echoLine("No se pudo crear entrada en la base de datos");
+		return false;
 	}
-	else
+	else if($_POST['crearDirectorio'] != "true")
 	{
 		//Se quita los directorios que estan antes del nombre del archivo y se
 		//le adjunta el directorio raiz del servidor remoto
@@ -104,16 +111,18 @@ function subirArchivo()
 		if(move_uploaded_file($_FILES['archivo']['tmp_name'], $pathArchivo))
 		{
 			echoLine("El archivo ".$nombreArchivo." se ha subido exitosamente");
+			return true;
 		}
 		else
 		{
 			echoLine("Error al subir archivo");
+			return false;
 		}
 	}
-
-
-
-	
+	else
+	{
+		return true;
+	}
 
 }
 
@@ -174,6 +183,11 @@ function subirDirectorio($path)
 	$stringComando = "mkdir -p ".$pathArchivo.$nombreDirectorio;
 	//Se crea el directorio
 	exec($stringComando);
+
+	//Preparar el arreglo superglobal $_FILES con los datos del directorio para despues hacer la llamada
+	//a funcion subirArchivo
+	$_FILES['archivo']['name'] = $nombreDirectorio;
+	$_FILES['archivo']['size'] = 0;
 }
 
 ?>
