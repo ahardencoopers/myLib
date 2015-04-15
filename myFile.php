@@ -28,6 +28,9 @@ function subirArchivo()
 
 	haySesion();
 
+	$directorioActual = $_SESSION["directorioActual"];
+	echoLine("subir");
+	echoLine($directorioActual);
 	$creoEntrada = false;
 
 	$idUsuario = $_SESSION["id"];
@@ -36,7 +39,8 @@ function subirArchivo()
 	$descArchivo = $_POST["descArchivo"];
 	$tipoArchivo = pathinfo($_FILES['archivo']['name'], PATHINFO_EXTENSION);
 	$tamArchivo = $_FILES['archivo']['size']/1024;
-	$pathArchivo = "/var/www/html/serverfile/archivosRoot/".$nombreArchivo;
+	//$pathArchivo = "/var/www/html/serverfile/archivosRoot/".$nombreArchivo;
+	$pathArchivo = $directorioActual.$nombreArchivo;
 
 	if($_POST['crearDirectorio'] == "true")
 	{
@@ -175,8 +179,10 @@ OUT;
 //Si se da como input un path con multiples directorios, y no existen, se crean.
 function subirDirectorio($path)
 {
+	$directorioActual = $_SESSION["directorioActual"];
 	//Se adjunta el path absoluto del servidor remoto al path relativo del usuario dentro del servidor remoto
-	$pathArchivo = "/var/www/html/serverfile/archivosRoot/".$path;
+	//$pathArchivo = "/var/www/html/serverfile/archivosRoot/".$path;
+	$pathArchivo = $directorioActual.$path;
 	//Se obtiene el nombre del directorio
 	$nombreDirectorio = $_POST['nombreDirectorio'];
 	//Se crea el string del comando combinando el path del nuevo directorio con el nombre

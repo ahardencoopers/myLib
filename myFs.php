@@ -14,7 +14,7 @@ function iniciarDirectorio()
 
 function cambiarDirectorio($nuevoDirectorio)
 {
-	if($nuevoDirectorio = "..")
+	if($nuevoDirectorio == "..")
 	{
 		echoLine("Regresar directorio");
 	}
@@ -99,7 +99,7 @@ OUT;
 			{
 echo <<<OUT
 				<tr>
-					<td><a href="$path">$nombreArchivo</a></td>
+					<td><a href="$path" target="_blank">$nombreArchivo</a></td>
 					<td>$descrArchivo</td>
 					<td>$ownerArchivo</td>
 					<td>$fechaArchivo</td>
