@@ -29,8 +29,6 @@ function subirArchivo()
 	haySesion();
 
 	$directorioActual = $_SESSION["directorioActual"];
-	echoLine("subir");
-	echoLine($directorioActual);
 	$creoEntrada = false;
 
 	$idUsuario = $_SESSION["id"];

@@ -16,7 +16,21 @@ function cambiarDirectorio($nuevoDirectorio)
 {
 	if($nuevoDirectorio == "..")
 	{
-		echoLine("Regresar directorio");
+		$directorioActual = $_SESSION["directorioActual"];
+
+		if($directorioActual == "archivosRoot/")
+		{
+			echoLine("Te encuentras en la carpeta raiz.");
+			echoLine("No puedes regresar mas carpetas.");
+		}
+		else
+		{
+			$informacionPath = pathinfo($directorioActual);
+			$directorioAtras = $informacionPath['dirname']."/";
+			$_SESSION["directorioActual"] = $directorioAtras;
+
+		}
+
 	}
 	else
 	{
