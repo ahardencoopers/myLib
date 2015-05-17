@@ -68,6 +68,7 @@ echo <<<OUT
 					<th data-field="fechaArchivo">Fecha de Creacion</th>
 					<th data-field="tamArchivo">Tamanio</th>
 					<th data-field="tipoArchivo">Tipo</th>
+					<th data-field="editarArchivo">Opciones</th>
 				</tr>
 OUT;
 
@@ -119,29 +120,68 @@ echo <<<OUT
 					<td>$fechaArchivo</td>
 					<td>$tamArchivo</td>
 					<td>$tipoArchivo</td>
+OUT;
+
+				if($idUsuario == $fkArchivo)
+				{
+echo <<<OUT
+					<td>
+						<form action="editarArchivo.php" method="post">
+							<input type="hidden" name="editarArchivo" value="$nombreArchivo">
+							<input class="btn-link" type="submit" 
+								name="submitEditarArchivo" value="Editar">
+						</form>
+
+					</td>
 				</tr>
 OUT;
+		
+				}
+				else
+				{
+echo <<<OUT
+				<td>No Disponible</td>
+				</tr>
+OUT;
+				}
 			}
 			else
 			{
 echo <<<OUT
 				<tr>
 					<td >
-						<form action="fileHome.php" method="post">
-							<input type="hidden" name="nuevoDirectorio" value="$nombreArchivo">
-							<input class="btn-link" type="submit" 
-								name="submitNuevoDirectorio" value="Ir a carpeta: $nombreArchivo">
-						</form>
+					    <form action="fileHome.php" method="post">
+						<input type="hidden" name="nuevoDirectorio" value="$nombreArchivo">
+						<input class="btn-link" type="submit" 
+						    name="submitNuevoDirectorio" value="Ir a carpeta: $nombreArchivo">
+					    </form>
 					</td>
-
 					<td>$descrArchivo</td>
 					<td>$ownerArchivo</td>
 					<td>$fechaArchivo</td>
 					<td>$tamArchivo</td>
 					<td>$tipoArchivo</td>
-				</tr>
 OUT;
-
+				if($idUsuario == $fkArchivo)
+				{
+echo <<<OUT
+					<td>
+						<form action="editarArchivo.php" method="post">
+							<input type="hidden" name="editarArchivo" value="$nombreArchivo">
+							<input class="btn-link" type="submit" 
+								name="submitEditarArchivo" value="Editar">
+						</form>
+					</td>
+					</tr>
+OUT;
+				}
+				else
+				{
+echo <<<OUT
+					<td>No Disponible</td>
+					</tr>
+OUT;
+				}
 			}
 
 		}
@@ -149,5 +189,73 @@ OUT;
 	}
 }
 
+function mostrarEditarArchivo($nombreEditarArchivo)
+{
+	$conexion = conectarDb();
+
+	haySesion();
+	validarSesion();
+
+	$nombreUsuario = $_SESSION["nombre"];
+	$idUsuario = $_SESSION["id"];
+	$directorioActual = $_SESSION["directorioActual"];
+
+	$queryEditarArchivo = "SELECT nombre, descr, visib FROM Archivos WHERE nombre = ?";
+
+	if(prepararQuery($queryEditarArchivo, $stmtEditarArchivo, $conexion))
+		{
+			mysqli_stmt_bind_param($stmtEditarArchivo, "s", $nombreEditarArchivo);
+			mysqli_stmt_execute($stmtEditarArchivo);
+			mysqli_stmt_bind_result($stmtEditarArchivo, $nombreArchivo, $descrArchivo, $visibArchivo);
+			mysqli_stmt_fetch($stmtEditarArchivo);
+		}
+		else
+		{
+			echoLine("error al mostrar Archivos");
+			return false;
+		}
+	
+	mysqli_stmt_store_result($stmtEditarArchivo);
+
+
+echo <<<OUT
+		<table class="table table-bordered table-hover" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+			<thead>
+				<tr>
+					<th data-field="nombreArchivo">Nombre</th>
+					<th data-field="descrArchivo">Descripcion</th>
+					<th data-field="ownerArchivo">Visibilidad</th>
+				</tr>
+			</thead>
+
+				<tr>
+					<form action="editarArchivo.php" method="post">
+						<input type="hidden" name="nombreOriginal" value="$nombreArchivo">
+						<td>
+							<input type="text" name="editarNombre" value="$nombreArchivo">
+							</input>
+						</td>
+						<td>
+							<input type="text" name="editarDescr" value="$descrArchivo">
+							</input>
+						</td>
+						<td>
+							<select name="listaVisib">
+								<option value="publico">
+									Publico
+								</option>
+								<option value="privado">
+									Privado
+								</option>
+							</select>
+						</td>
+						<td>
+							<input type="submit" name="submitEditarArchivo" value="Actualizar Archivo">
+						</td>
+					</form>
+				</tr>
+OUT;
+
+}
 
 ?>
