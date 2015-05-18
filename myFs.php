@@ -200,13 +200,13 @@ function mostrarEditarArchivo($nombreEditarArchivo)
 	$idUsuario = $_SESSION["id"];
 	$directorioActual = $_SESSION["directorioActual"];
 
-	$queryEditarArchivo = "SELECT nombre, descr, visib FROM Archivos WHERE nombre = ?";
+	$queryEditarArchivo = "SELECT nombre, descr, visib, tipo FROM Archivos WHERE nombre = ?";
 
 	if(prepararQuery($queryEditarArchivo, $stmtEditarArchivo, $conexion))
 		{
 			mysqli_stmt_bind_param($stmtEditarArchivo, "s", $nombreEditarArchivo);
 			mysqli_stmt_execute($stmtEditarArchivo);
-			mysqli_stmt_bind_result($stmtEditarArchivo, $nombreArchivo, $descrArchivo, $visibArchivo);
+			mysqli_stmt_bind_result($stmtEditarArchivo, $nombreArchivo, $descrArchivo, $visibArchivo, $tipoArchivo);
 			mysqli_stmt_fetch($stmtEditarArchivo);
 		}
 		else
@@ -225,12 +225,14 @@ echo <<<OUT
 					<th data-field="nombreArchivo">Nombre</th>
 					<th data-field="descrArchivo">Descripcion</th>
 					<th data-field="ownerArchivo">Visibilidad</th>
+					<th data-field="opcionesArchivo">Opciones</th>
 				</tr>
 			</thead>
 
 				<tr>
 					<form action="editarArchivo.php" method="post">
 						<input type="hidden" name="nombreOriginal" value="$nombreArchivo">
+						<input type="hidden" name="tipoArchivo" value="$tipoArchivo">
 						<td>
 							<input type="text" name="editarNombre" value="$nombreArchivo">
 							</input>
@@ -250,7 +252,10 @@ echo <<<OUT
 							</select>
 						</td>
 						<td>
-							<input type="submit" name="submitEditarArchivo" value="Actualizar Archivo">
+							<input class="btn btn-link" type="submit" name="submitEditarArchivo" value="Actualizar Archivo">
+						</td>
+						<td>
+							<input type="submit" name="submitBorrarArchivo" value="Borrar Archivo">
 						</td>
 					</form>
 				</tr>
