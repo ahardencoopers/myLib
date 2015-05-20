@@ -53,7 +53,7 @@ function mostrarArchivos()
 	$stringComando = "ls ".$directorioActual;
 	exec($stringComando, $outputComando);
 
-	$queryMostrarArchivos = "SELECT creadorFk, fecha, nombre, descr, tipo, tam, visib 
+	$queryMostrarArchivos = "SELECT creadorFk, fecha, nombre, descr, tipo, tam, visib, path 
 		FROM Archivos WHERE nombre = ?";
 
 	//Preparar para despliegue de archivos en html
@@ -64,6 +64,7 @@ echo <<<OUT
 				<tr>
 					<th data-field="nombreArchivo">Nombre</th>
 					<th data-field="descrArchivo">Descripcion</th>
+					<th data-field="pathArchivo">Link al archivo</th>
 					<th data-field="ownerArchivo">Owner</th>
 					<th data-field="fechaArchivo">Fecha de Creacion</th>
 					<th data-field="tamArchivo">Tamanio</th>
@@ -79,7 +80,7 @@ OUT;
 			mysqli_stmt_bind_param($stmtMostrarArchivos, "s", $outputComando[$i]);
 			mysqli_stmt_execute($stmtMostrarArchivos);
 			mysqli_stmt_bind_result($stmtMostrarArchivos, $fkArchivo, $fechaArchivo, 
-				$nombreArchivo, $descrArchivo, $tipoArchivo, $tamArchivo, $visiArchivo);
+				$nombreArchivo, $descrArchivo, $tipoArchivo, $tamArchivo, $visiArchivo, $pathArchivo);
 			mysqli_stmt_fetch($stmtMostrarArchivos);
 		}
 		else
@@ -109,6 +110,7 @@ OUT;
 		if(($visiArchivo == 0) || ($idUsuario == $fkArchivo))
 		{
 			$path = $directorioActual.$nombreArchivo;
+			$linkArchivo = "www.hardencooper.co/serverfile/".$pathArchivo;
 	
 			if($tipoArchivo != "dir")
 			{
@@ -116,6 +118,7 @@ echo <<<OUT
 				<tr>
 					<td><a href="$path" target="_blank">$nombreArchivo</a></td>
 					<td>$descrArchivo</td>
+					<td>$linkArchivo</td>
 					<td>$ownerArchivo</td>
 					<td>$fechaArchivo</td>
 					<td>$tamArchivo</td>
@@ -157,6 +160,7 @@ echo <<<OUT
 					    </form>
 					</td>
 					<td>$descrArchivo</td>
+					<td>$linkArchivo</td>
 					<td>$ownerArchivo</td>
 					<td>$fechaArchivo</td>
 					<td>$tamArchivo</td>
@@ -225,6 +229,7 @@ echo <<<OUT
 					<th data-field="nombreArchivo">Nombre</th>
 					<th data-field="descrArchivo">Descripcion</th>
 					<th data-field="ownerArchivo">Visibilidad</th>
+					<th data-field="cambiarUsuario">Cambiar dueño del archivo</th>
 					<th data-field="opcionesArchivo">Opciones</th>
 				</tr>
 			</thead>
@@ -235,11 +240,9 @@ echo <<<OUT
 						<input type="hidden" name="tipoArchivo" value="$tipoArchivo">
 						<td>
 							<input type="text" name="editarNombre" value="$nombreArchivo">
-							</input>
 						</td>
 						<td>
 							<input type="text" name="editarDescr" value="$descrArchivo">
-							</input>
 						</td>
 						<td>
 							<select name="listaVisib">
@@ -250,6 +253,9 @@ echo <<<OUT
 									Privado
 								</option>
 							</select>
+						</td>
+						<td>
+							<input type="text" name="cambiarUsuario" value="$nombreUsuario">
 						</td>
 						<td>
 							<input class="btn btn-link" type="submit" name="submitEditarArchivo" value="Actualizar Archivo">
