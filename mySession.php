@@ -23,6 +23,11 @@ function haySesion()
 	if(session_id() == "")
 	{
 		session_start();
+		return true;
+	}
+	else
+	{
+		return false;	
 	}
 }
 

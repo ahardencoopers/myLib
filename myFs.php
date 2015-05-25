@@ -8,7 +8,7 @@ require_once("mySession.php");
 
 function iniciarDirectorio()
 {
-	$_SESSION["directorioActual"] = "archivosRoot/";
+	$_SESSION["directorioActual"] = "../serverfile/archivosRoot/";
 
 }
 
@@ -18,10 +18,9 @@ function cambiarDirectorio($nuevoDirectorio)
 	{
 		$directorioActual = $_SESSION["directorioActual"];
 
-		if($directorioActual == "archivosRoot/")
+		if($directorioActual == "../serverfile/archivosRoot/")
 		{
-			echoLine("Te encuentras en la carpeta raiz.");
-			echoLine("No puedes regresar mas carpetas.");
+				return false;
 		}
 		else
 		{
@@ -59,20 +58,9 @@ function mostrarArchivos()
 	//Preparar para despliegue de archivos en html
 	//Abrir tabla donde se pondran los archivos
 echo <<<OUT
-		<table class="table table-bordered table-hover" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
-			<thead>
-				<tr>
-					<th data-field="nombreArchivo">Nombre</th>
-					<th data-field="descrArchivo">Descripcion</th>
-					<th data-field="pathArchivo">Link al archivo</th>
-					<th data-field="ownerArchivo">Owner</th>
-					<th data-field="fechaArchivo">Fecha de Creacion</th>
-					<th data-field="tamArchivo">Tamanio</th>
-					<th data-field="tipoArchivo">Tipo</th>
-					<th data-field="editarArchivo">Opciones</th>
-				</tr>
-OUT;
+<div class="container" >
 
+OUT;
 	for($i = 0; $i < sizeof($outputComando); $i++)
 	{
 		if(prepararQuery($queryMostrarArchivos, $stmtMostrarArchivos, $conexion))
@@ -115,83 +103,55 @@ OUT;
 			if($tipoArchivo != "dir")
 			{
 echo <<<OUT
-				<tr>
-					<td><a href="$path" target="_blank">$nombreArchivo</a></td>
-					<td>$descrArchivo</td>
-					<td>$linkArchivo</td>
-					<td>$ownerArchivo</td>
-					<td>$fechaArchivo</td>
-					<td>$tamArchivo</td>
-					<td>$tipoArchivo</td>
-OUT;
+    <div class="row browse-item">
+        <div class="col-xs-2 text-center">
+        </div>
+        <div class="col-xs-3 text-center">
+			<a href="$path" target="_blank"><img src="img/pdf17.png"></a>
+   		     	
+        </div>
+        <div class="col-xs-6">
+			<h4><a href="$path" target="_blank">$nombreArchivo</a></h4>
+	        <p>$descrArchivo</p>
+			<p>Tipo de archivo: $tipoArchivo</p>	
+        </div> 
+    </div>
 
-				if($idUsuario == $fkArchivo)
-				{
-echo <<<OUT
-					<td>
-						<form action="editarArchivo.php" method="post">
-							<input type="hidden" name="editarArchivo" value="$nombreArchivo">
-							<input class="btn-link" type="submit" 
-								name="submitEditarArchivo" value="Editar">
-						</form>
-
-					</td>
-				</tr>
 OUT;
-		
-				}
-				else
-				{
-echo <<<OUT
-				<td>No Disponible</td>
-				</tr>
-OUT;
-				}
+echoLine();
 			}
-			else
-			{
-echo <<<OUT
-				<tr>
-					<td >
-					    <form action="fileHome.php" method="post">
-						<input type="hidden" name="nuevoDirectorio" value="$nombreArchivo">
-						<input class="btn-link" type="submit" 
-						    name="submitNuevoDirectorio" value="Ir a carpeta: $nombreArchivo">
-					    </form>
-					</td>
-					<td>$descrArchivo</td>
-					<td>$linkArchivo</td>
-					<td>$ownerArchivo</td>
-					<td>$fechaArchivo</td>
-					<td>$tamArchivo</td>
-					<td>$tipoArchivo</td>
-OUT;
-				if($idUsuario == $fkArchivo)
-				{
-echo <<<OUT
-					<td>
-						<form action="editarArchivo.php" method="post">
-							<input type="hidden" name="editarArchivo" value="$nombreArchivo">
-							<input class="btn-link" type="submit" 
-								name="submitEditarArchivo" value="Editar">
-						</form>
-					</td>
-					</tr>
-OUT;
-				}
-				else
-				{
-echo <<<OUT
-					<td>No Disponible</td>
-					</tr>
-OUT;
-				}
-			}
-
 		}
+		if($tipoArchivo == "dir")
+		{
+echo <<<OUT
+    <div class="row browse-item">
+        <div class="col-xs-2 text-center">
+        </div>
+        <div class="col-xs-3 text-center">
+        </div>
+        <div class="col-xs-6 text-left">
+			<h4>
+					<form action="fileHome.php"  method="post">
+					<input type="hidden" name="nuevoDirectorio" value="$nombreArchivo">
+					<input class="btn-link text-left" type="submit" 
+					    name="submitNuevoDirectorio" value="Ir a carpeta: $nombreArchivo">
+				    </form>
+			</h4>
+	        <p>$descrArchivo</p>
+			<p>$linkArchivo</p>
+			<p>Tipo de archivo: $tipoArchivo</p>	
+        </div> 
+    </div>
 
+OUT;
+echoLine();
+			}
+		}
+echo <<<OUT
+</div>
+OUT;
 	}
-}
+
 
 function mostrarEditarArchivo($nombreEditarArchivo)
 {
