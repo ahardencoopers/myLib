@@ -128,6 +128,7 @@ echo <<<OUT
         <div class="col-xs-2 text-center">
         </div>
         <div class="col-xs-3 text-center">
+			<a href="$path" target="_blank"><img src="img/file96.png"></a>
         </div>
         <div class="col-xs-6 text-left">
 			<h4>
